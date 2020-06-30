@@ -1,0 +1,62 @@
+version: "3"
+
+services:
+
+  namenode:
+    image: harryyhzhang/hadoopeco
+    ports:
+      - "50070:50070"
+      - "8090:8090"
+      - "8088:8088"
+    hostname: testbed-master
+    container_name: testbed-master
+    entrypoint:  sh -c  "sudo service ssh start &&  
+                    /usr/local/hadoop/sbin/start-dfs.sh &&  
+                    /usr/local/hadoop/sbin/start-yarn.sh &&  
+                    /usr/local/spark/sbin/start-all.sh &&  
+                    hadoop fs -mkdir -p /user/rstudio-user &&  
+                    hadoop fs -chmod 777 /user/rstudio-user && 
+                    sudo /usr/lib/rstudio-server/bin/rstudio-server start && 
+                    bash" 
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+      - ../data:/data
+    tty: true
+    stdin_open: true
+    networks:
+      webnet:
+        ipv4_address: 192.168.33.2
+    deploy:
+      resources:
+          limits:
+            memory: 4g
+            
+  datanode1:
+    image: harryyhzhang/hadoopeco
+    ports: 
+      - "8042:8042"
+    volumes:
+      - hadoop_datanode1:/hadoop/dfs/data
+    hostname: testbed-slave-1
+    container_name: testbed-slave-1
+    tty: true
+    stdin_open: true
+    networks:
+      webnet:
+        ipv4_address: 192.168.33.3
+    deploy:
+      resources:
+          limits:
+            memory: 4g
+
+networks:
+ webnet:
+   external:
+     name: shared_nw
+
+volumes:
+   hadoop_namenode: 
+   hadoop_datanode1:
+   hadoop_datanode2:
+   hadoop_datanode3:
+   
