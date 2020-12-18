@@ -101,8 +101,8 @@ RUN chmod +x $HADOOP_HOME/spark-services.sh
 # set permissions
 #RUN chmod 744 -R $HADOOP_HOME
 
-# format namenode
-RUN $HADOOP_HOME/bin/hdfs namenode -format
+# format namenode and set the safemode off, use
+RUN $HADOOP_HOME/bin/hdfs namenode -format && hdfs dfsadmin -safemode leave
 
 # install HIVE2.3.2
 ENV HIVE_VERSION=2.3.5
@@ -130,9 +130,9 @@ RUN echo "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -sc)-cr
 RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
 RUN sudo apt-get update 
 RUN sudo apt-get install -y r-base
-#RUN sudo R -e "install.packages('sparklyr')"
-#RUN sudo R -e "install.packages('devtools', repos = 'http://cran.us.r-project.org')"
-#RUN sudo R -e "install.packages('ggplot2', repos = 'http://cran.us.r-project.org')" 
+RUN sudo R -e "install.packages('sparklyr')"
+RUN sudo R -e "install.packages('devtools', repos = 'http://cran.us.r-project.org')"
+RUN sudo R -e "install.packages('ggplot2', repos = 'http://cran.us.r-project.org')" 
 
 # Install R studio server 1.1.456
 RUN cd ~ && wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl1.0/libssl1.0.0_1.0.2n-1ubuntu5.3_amd64.deb && sudo dpkg -i libssl1.0.0_1.0.2n-1ubuntu5.3_amd64.deb

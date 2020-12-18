@@ -1,0 +1,1 @@
+resolvers += Resolver.url("bintray-sbt-plugins", url(" https://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-native-packager/scala_2.10/sbt_0.13/1.2.0/jars/sbt-native-packager.jar"))(Resolver.ivyStylePatterns)
